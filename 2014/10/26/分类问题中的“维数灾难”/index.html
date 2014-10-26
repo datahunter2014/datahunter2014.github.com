@@ -5,14 +5,12 @@
   
   <title>分类问题中的“维数灾难” | datahunter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。
-　　假设现在有一组照片，每一张照片里有一只猫或者一条狗。我们希望设计一个分类器可以自动地将照片中的动物辨别开来。为了实现这个目标，首先">
+  <meta name="description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分类问题中的“维数灾难”">
-<meta property="og:url" content="http://yoursite.com/2014/10/26/第一篇文章/">
+<meta property="og:url" content="http://yoursite.com/2014/10/26/分类问题中的“维数灾难”/">
 <meta property="og:site_name" content="datahunter">
-<meta property="og:description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。
-　　假设现在有一组照片，每一张照片里有一只猫或者一条狗。我们希望设计一个分类器可以自动地将照片中的动物辨别开来。为了实现这个目标，首先">
+<meta property="og:description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。">
 <meta property="og:image" content="/img/201410261.png">
 <meta property="og:image" content="/img/201410262.png">
 <meta property="og:image" content="/img/201410263.png">
@@ -28,8 +26,7 @@
 <meta property="og:image" content="/img/2014102613.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分类问题中的“维数灾难”">
-<meta name="twitter:description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。
-　　假设现在有一组照片，每一张照片里有一只猫或者一条狗。我们希望设计一个分类器可以自动地将照片中的动物辨别开来。为了实现这个目标，首先">
+<meta name="twitter:description" content="在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。">
 
   
     <link rel="alternative" href="/atom.xml" title="datahunter" type="application/atom+xml">
@@ -79,9 +76,9 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-第一篇文章" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-分类问题中的“维数灾难”" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/10/26/第一篇文章/" class="article-date">
+    <a href="/2014/10/26/分类问题中的“维数灾难”/" class="article-date">
   <time datetime="2014-10-26T07:07:16.000Z" itemprop="datePublished">2014-10-26</time>
 </a>
     
@@ -105,7 +102,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>　　在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。</p>
+        <p>　　在看机器学习的论文时，经常会看到有作者提到“curse of　dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。<br><a id="more"></a></p>
 <p>　　假设现在有一组照片，每一张照片里有一只猫或者一条狗。我们希望设计一个分类器可以自动地将照片中的动物辨别开来。为了实现这个目标，首先需要考虑如何将照片中的动物的特征用数字的形式表达出来。猫与狗的最大区别是什么？有人可能首先想到猫与狗的颜色不一样，有人则可能想到猫与狗的大小不一样。假设从颜色来辨别猫与狗，可以设计三个特征：红色的平均值，绿色的平均值和蓝色的平均值，来决定照片中的动物属于哪一个类：</p>
 <figure class="highlight [python]"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">if 0.5 * red + 0.3 * green + 0.2 * blue &gt;</span> <span class="number">0</span>.<span class="number">6</span><span class="symbol">:</span></span></div><div class="line">    <span class="keyword">return</span> cat</div><div class="line"><span class="symbol">else:</span></div><div class="line">    <span class="keyword">return</span> dog</div><div class="line">}</div></pre></td></tr></table></figure>
 
@@ -166,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/10/26/第一篇文章/" data-id="opj6h5yios59b0kv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/10/26/分类问题中的“维数灾难”/" data-id="fxle0fg7oa9n4u39" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/机器学习/">机器学习</a></li></ul>
@@ -225,7 +222,7 @@
       <ul>
         
           <li>
-            <a href="/2014/10/26/第一篇文章/">分类问题中的“维数灾难”</a>
+            <a href="/2014/10/26/分类问题中的“维数灾难”/">分类问题中的“维数灾难”</a>
           </li>
         
       </ul>
