@@ -3,17 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>datahunter</title>
+  <title>Mahout源码分析：并行化FP-Growth算法 | datahunter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="machine learning, data mining">
-<meta property="og:type" content="website">
-<meta property="og:title" content="datahunter">
-<meta property="og:url" content="http://yoursite.com/">
+  <meta name="description" content="FP-Growth是一种常被用来进行关联分析，挖掘频繁项的算法。与Aprior算法相比，FP-Growth算法采用前缀树的形式来表征数据，减少了扫描事务数据库的次数，通过递归地生成条件FP-tree来挖掘频繁项。参考资料[1]详细分析了这一过程。事实上，面对大数据量时，FP-Growth算法生成的FP-tree非常大，无法放入内存，挖掘到的频繁项也可能有指数多个。本文将分析如何并行化FP-Gr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mahout源码分析：并行化FP-Growth算法">
+<meta property="og:url" content="http://yoursite.com/2014/10/27/Mahout源码分析：并行化FP-Growth算法/">
 <meta property="og:site_name" content="datahunter">
-<meta property="og:description" content="machine learning, data mining">
+<meta property="og:description" content="FP-Growth是一种常被用来进行关联分析，挖掘频繁项的算法。与Aprior算法相比，FP-Growth算法采用前缀树的形式来表征数据，减少了扫描事务数据库的次数，通过递归地生成条件FP-tree来挖掘频繁项。参考资料[1]详细分析了这一过程。事实上，面对大数据量时，FP-Growth算法生成的FP-tree非常大，无法放入内存，挖掘到的频繁项也可能有指数多个。本文将分析如何并行化FP-Gr">
+<meta property="og:image" content="/img/201410281.png">
+<meta property="og:image" content="/img/201410282.png">
+<meta property="og:image" content="/img/201410283.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="datahunter">
-<meta name="twitter:description" content="machine learning, data mining">
+<meta name="twitter:title" content="Mahout源码分析：并行化FP-Growth算法">
+<meta name="twitter:description" content="FP-Growth是一种常被用来进行关联分析，挖掘频繁项的算法。与Aprior算法相比，FP-Growth算法采用前缀树的形式来表征数据，减少了扫描事务数据库的次数，通过递归地生成条件FP-tree来挖掘频繁项。参考资料[1]详细分析了这一过程。事实上，面对大数据量时，FP-Growth算法生成的FP-tree非常大，无法放入内存，挖掘到的频繁项也可能有指数多个。本文将分析如何并行化FP-Gr">
 
   
     <link rel="alternative" href="/atom.xml" title="datahunter" type="application/atom+xml">
@@ -63,9 +66,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-Mahout源码分析：并行化FP-Growth算法" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Mahout源码分析：并行化FP-Growth算法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/10/27/Mahout源码分析：并行化FP-Growth算法/" class="article-date">
   <time datetime="2014-10-27T13:19:25.000Z" itemprop="datePublished">2014-10-27</time>
@@ -82,8 +83,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/27/Mahout源码分析：并行化FP-Growth算法/">Mahout源码分析：并行化FP-Growth算法</a>
+    <h1 class="article-title" itemprop="name">
+      Mahout源码分析：并行化FP-Growth算法
     </h1>
   
 
@@ -181,105 +182,20 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-关联分析：FP-Growth算法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/10/26/关联分析：FP-Growth算法/" class="article-date">
-  <time datetime="2014-10-26T09:39:26.000Z" itemprop="datePublished">2014-10-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/机器学习/">机器学习</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/26/关联分析：FP-Growth算法/">关联分析：FP-Growth算法</a>
-    </h1>
+    <a href="/2014/10/26/关联分析：FP-Growth算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">关联分析：FP-Growth算法</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>　　关联分析又称关联挖掘，就是在交易数据、关系数据或其他信息载体中，查找存在于项目集合或对象集合之间的频繁模式、关联、相关性或因果结构。关联分析的一个典型例子是购物篮分析。通过发现顾客放入购物篮中不同商品之间的联系，分析顾客的购买习惯。比如，67%的顾客在购买尿布的同时也会购买啤酒。通过了解哪些商品频繁地被顾客同时购买，可以帮助零售商制定营销策略。关联分析也可以应用于其他领域，如生物信息学、医疗诊断、网页挖掘和科学数据分析等。<br>
-        
-          <p class="article-more-link">
-            <a href="/2014/10/26/关联分析：FP-Growth算法/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/10/26/关联分析：FP-Growth算法/" data-id="k2xe4bzfqxd44gi8" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/关联分析/">关联分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/机器学习/">机器学习</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
-
-  
-    <article id="post-分类问题中的“维数灾难”" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/10/26/分类问题中的“维数灾难”/" class="article-date">
-  <time datetime="2014-10-26T07:07:16.000Z" itemprop="datePublished">2014-10-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/机器学习/">机器学习</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/26/分类问题中的“维数灾难”/">分类问题中的“维数灾难”</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>　　在看机器学习的论文时，经常会看到有作者提到“curse of dimensionality”，中文译为“维数灾难”，这到底是一个什么样的“灾难”？本文将通过一个例子来介绍这令人讨厌的“curse of dimensionality”以及它在分类问题中的重要性。<br>
-        
-          <p class="article-more-link">
-            <a href="/2014/10/26/分类问题中的“维数灾难”/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/10/26/分类问题中的“维数灾难”/" data-id="9qww61aonwz1g9kx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/机器学习/">机器学习</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-  
 </section>
         
           <aside id="sidebar">
